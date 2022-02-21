@@ -1,11 +1,14 @@
 import './App.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { YearMonthDay } from './components/year_month_day'
 
 function App() {
   const [number, setNumber] = useState(0);
   const onClickButton = () => {
     setNumber(number + 1);
   }
+
+  useEffect(() => console.log("numberの値が更新されました", [number]));
 
   const [inputValue, setInputValue] = useState("");
 
@@ -19,6 +22,7 @@ function App() {
     <hr />
     {<p>{number}</p>}
     <button onClick={onClickButton}>count up</button>
+    <button onClick={() => setNumber(number - 1)}>count down</button>
 
     <hr />
     <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
@@ -34,15 +38,6 @@ function App() {
 
 function TitleDay({title, children}) {
   return <h1>{title} : {children}</h1>
-}
-
-function YearMonthDay(props) {
-  return <span>{props.year}/{props.month}/{props.children}</span>
-}
-
-function Hello(props) {
-  // 正しい例。div は HTML タグなので、<div> と書くのは正解です。
-  return <div>Hello {props.toWhat}</div>;
 }
 
 export default App;
