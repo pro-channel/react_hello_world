@@ -1,43 +1,59 @@
 import './App.css';
-import { useState, useEffect } from 'react';
-import { YearMonthDay } from './components/year_month_day'
+import { BrowserRouter, Route, Routes, Link, useSearchParams, useParams } from 'react-router-dom';
+import { Content } from './components/content';
+import { Home } from './components/home';
+import { NotFound } from './components/not_found';
 
 function App() {
-  const [number, setNumber] = useState(0);
-  const onClickButton = () => {
-    setNumber(number + 1);
-  }
-
-  useEffect(() => console.log("numberの値が更新されました", [number]));
-
-  const [inputValue, setInputValue] = useState("");
-
   return (
     <>
-    {console.log("RUN!")}
-    <div className='hello'>
+    <BrowserRouter>
       <h1>Hello world</h1>
-    </div>
-
-    <hr />
-    {<p>{number}</p>}
-    <button onClick={onClickButton}>count up</button>
-    <button onClick={() => setNumber(number - 1)}>count down</button>
-
-    <hr />
-    <input type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-    <button onClick={() => alert(inputValue)}>value check</button>
-    
-    <hr />
-    <TitleDay title="新しいfunctionを追加しました">
-      <YearMonthDay year="2022" month="7">15(Fri)</YearMonthDay>
-    </TitleDay>
+      <menu>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/content">Content</Link></li>
+        <li><Link to="/article/8">Article(8番目)</Link></li>
+        <li><Link to="/search?page=9">Search(9番目)</Link></li>
+      </menu>
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/content' element={<Content />} />
+        <Route path='/article' element={<Article />} >
+          <Route path=':id' element={<Article />} />
+        </Route>
+        <Route path='/search' element={<Search />} />
+        <Route path='*' element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
     </>
   );
 }
 
-function TitleDay({title, children}) {
-  return <h1>{title} : {children}</h1>
+function Article() {
+  const params = useParams();
+  return(
+    <>
+    <h2>Article</h2>
+    { params.id ?
+        <p>この記事は{ params.id }番目を表示しています</p> :
+        <p>記事番号が設定されていません</p>
+    }
+    </>
+  )
+}
+
+function Search() {
+  const [searchParams] = useSearchParams();
+  const page = searchParams.get("page");
+  return(
+    <>
+    <h2>Search</h2>
+    { page ?
+      <p>検索画面の{ page }ページ目を表示しています</p> :
+      <p>ページ番号が設定されていません</p>
+    }
+    </>
+  )
 }
 
 export default App;
